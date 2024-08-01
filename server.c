@@ -36,6 +36,7 @@ int main(int argc, char ** argv)
     {
         struct sockaddr_in addr;
         socklen_t addr_len;   
+        char client_address[MAXLINE + 1];
         //accept blocks until an incoming connection arrives
         // accept returns a "file descrptor " to the connection
         //IMPORTANT NOTE: "connfd" = descriptor for each client, 
@@ -43,7 +44,10 @@ int main(int argc, char ** argv)
         //IMPORTANT NOTE: so we can listen to others while we are talking to this client
         printf("waiting for a connection on port %d \n", SERVER_PORT);
         fflush(stdout);
-        connfd = accept(listenfd, (SA *)NULL, NULL);
+        connfd = accept(listenfd, (SA *)&addr, &addr_len);
+
+        inet_ntop(AF_INET, &addr, client_address, MAXLINE);
+        printf("client address is %s \n", client_address, MAXLINE);
         
         //zero out the reciver buffer to make sure it ends up null terminated
         memset(recvline, 0, MAXLINE);
